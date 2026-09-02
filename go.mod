@@ -7,7 +7,7 @@ require (
 	github.com/tinywasm/fmt v0.25.7
 	github.com/tinywasm/model v0.1.4
 	github.com/tinywasm/sqlt v0.0.8
-	github.com/tinywasm/storage v0.0.2
+	github.com/tinywasm/storage v0.0.6
 	modernc.org/sqlite v1.54.0
 )
 
