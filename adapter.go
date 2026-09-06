@@ -4,10 +4,10 @@ import (
 	"database/sql"
 	"strings"
 
-	"github.com/tinywasm/ddl"
-	"github.com/tinywasm/fmt"
-	"github.com/tinywasm/sqlt"
-	"github.com/tinywasm/storage"
+	"webtyp.com/ddl"
+	"webtyp.com/fmt"
+	"webtyp.com/sqlt"
+	"webtyp.com/storage"
 
 	_ "modernc.org/sqlite" // SQLite driver
 )

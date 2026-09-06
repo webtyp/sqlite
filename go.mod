@@ -1,14 +1,14 @@
-module github.com/tinywasm/sqlite
+module webtyp.com/sqlite
 
 go 1.25.2
 
 require (
-	github.com/tinywasm/ddl v0.0.12
-	github.com/tinywasm/fmt v0.25.7
-	github.com/tinywasm/model v0.1.4
-	github.com/tinywasm/sqlt v0.0.8
-	github.com/tinywasm/storage v0.0.6
 	modernc.org/sqlite v1.54.0
+	webtyp.com/ddl v0.0.12
+	webtyp.com/fmt v0.25.7
+	webtyp.com/model v0.1.7
+	webtyp.com/sqlt v0.0.8
+	webtyp.com/storage v0.0.6
 )
 
 require (

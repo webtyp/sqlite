@@ -1,7 +1,7 @@
-# tinywasm/sqlite
+# webtyp/sqlite
 <img src="docs/img/badges.svg">
 
-This is the `tinywasm/sqlite` adapter for `github.com/tinywasm/orm`.
+This is the `webtyp/sqlite` adapter for `webtyp.com/orm`.
 
 ## Usage
 
@@ -13,8 +13,8 @@ package main
 import (
 	"log"
 
-	"github.com/tinywasm/orm"
-	"github.com/tinywasm/sqlite"
+	"webtyp.com/orm"
+	"webtyp.com/sqlite"
 )
 
 func main() {
@@ -29,7 +29,7 @@ func main() {
 	}
 	defer sqlite.Close(db)
 
-	// Ready to use db via github.com/tinywasm/orm fluent API
+	// Ready to use db via webtyp.com/orm fluent API
 	// ...
 }
 ```
@@ -44,12 +44,12 @@ func main() {
 ## Update
 
 `db.Update` always requires at least one `Condition`. This is enforced at
-compile time by `tinywasm/orm`. There is no "update by PK implicitly" magic.
+compile time by `webtyp/orm`. There is no "update by PK implicitly" magic.
 
 ```go
 // ✅ Correct
 if err := db.Update(&user, orm.Eq("id", user.ID)); err != nil { ... }
 
-// ❌ Compile error (caught by tinywasm/orm — will not reach the SQLite layer)
+// ❌ Compile error (caught by webtyp/orm — will not reach the SQLite layer)
 db.Update(&user)
 ```

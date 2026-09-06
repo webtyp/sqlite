@@ -1,8 +1,8 @@
 package sqlite_test
 
 import (
-	"github.com/tinywasm/model"
-	"github.com/tinywasm/storage"
+	"webtyp.com/model"
+	"webtyp.com/storage"
 )
 
 // execer is satisfied by both storage.Conn and storage.TxBoundExecutor — the shared surface
@@ -15,7 +15,7 @@ type execer interface {
 	Query(query string, args ...any) (storage.Rows, error)
 }
 
-// These helpers mirror what tinywasm/orm builds internally (see storage/conformance's own
+// These helpers mirror what webtyp/orm builds internally (see storage/conformance's own
 // create/readOne/readAll/update/delete) — this package tests the raw storage.Conn contract
 // directly, without depending on the ergonomic orm layer.
 

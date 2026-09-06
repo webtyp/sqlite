@@ -3,12 +3,12 @@ package sqlite_test
 import (
 	"testing"
 
-	"github.com/tinywasm/ddl"
-	"github.com/tinywasm/fmt"
-	"github.com/tinywasm/model"
-	"github.com/tinywasm/sqlite"
-	"github.com/tinywasm/storage"
-	"github.com/tinywasm/storage/conformance"
+	"webtyp.com/ddl"
+	"webtyp.com/fmt"
+	"webtyp.com/model"
+	"webtyp.com/sqlite"
+	"webtyp.com/storage"
+	"webtyp.com/storage/conformance"
 )
 
 type User struct {

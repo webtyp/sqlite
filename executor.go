@@ -4,10 +4,10 @@ import (
 	"database/sql"
 	"sync"
 
-	"github.com/tinywasm/ddl"
-	"github.com/tinywasm/fmt"
-	"github.com/tinywasm/model"
-	"github.com/tinywasm/storage"
+	"webtyp.com/ddl"
+	"webtyp.com/fmt"
+	"webtyp.com/model"
+	"webtyp.com/storage"
 )
 
 // sqliteConn implements storage.Conn (Executor+Compiler) plus storage.TxExecutor, ddl.TableIntrospector,
