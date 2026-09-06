@@ -4,11 +4,11 @@ go 1.25.2
 
 require (
 	modernc.org/sqlite v1.54.0
-	webtyp.com/ddl v0.0.12
-	webtyp.com/fmt v0.25.7
-	webtyp.com/model v0.1.7
-	webtyp.com/sqlt v0.0.8
-	webtyp.com/storage v0.0.6
+	webtyp.com/ddl v0.0.15
+	webtyp.com/fmt v1.0.0
+	webtyp.com/model v0.1.8
+	webtyp.com/sqlt v0.0.10
+	webtyp.com/storage v0.0.7
 )
 
 require (
