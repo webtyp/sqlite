@@ -8,7 +8,7 @@ require (
 	webtyp.com/fmt v1.0.0
 	webtyp.com/model v0.1.8
 	webtyp.com/sqlt v0.0.10
-	webtyp.com/storage v0.0.7
+	webtyp.com/storage v0.0.8
 )
 
 require (

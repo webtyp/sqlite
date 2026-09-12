@@ -63,9 +63,17 @@ func (c *sqliteConn) Query(query string, args ...any) (storage.Rows, error) {
 	c.mu.Unlock()
 
 	if tx != nil {
-		return tx.Query(query, args...)
+		rows, err := tx.Query(query, args...)
+		if err != nil {
+			return nil, err
+		}
+		return nullRows{rows}, nil
 	}
-	return c.db.Query(query, args...)
+	rows, err := c.db.Query(query, args...)
+	if err != nil {
+		return nil, err
+	}
+	return nullRows{rows}, nil
 }
 
 func (c *sqliteConn) Close() error {
@@ -110,7 +118,11 @@ func (e *sqliteTxExecutor) QueryRow(query string, args ...any) storage.Scanner {
 }
 
 func (e *sqliteTxExecutor) Query(query string, args ...any) (storage.Rows, error) {
-	return e.tx.Query(query, args...)
+	rows, err := e.tx.Query(query, args...)
+	if err != nil {
+		return nil, err
+	}
+	return nullRows{rows}, nil
 }
 
 func (e *sqliteTxExecutor) Commit() error {
@@ -134,12 +146,20 @@ type errScanner struct {
 }
 
 func (s *errScanner) Scan(dest ...any) error {
-	err := s.s.Scan(dest...)
+	err := s.s.Scan(storage.NullSafe(dest)...)
 	if err == sql.ErrNoRows {
 		return storage.ErrNoRows
 	}
 	return err
 }
+
+// nullRows applies the storage contract's NULL rule to the read-all path.
+// *sql.Rows satisfies storage.Rows on its own, which is precisely why this
+// wrapper is easy to forget: without it, ReadAll answers differently from
+// ReadOne on the same column.
+type nullRows struct{ *sql.Rows }
+
+func (r nullRows) Scan(dest ...any) error { return r.Rows.Scan(storage.NullSafe(dest)...) }
 
 var (
 	_ storage.Conn            = (*sqliteConn)(nil)
