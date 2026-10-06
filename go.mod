@@ -6,7 +6,7 @@ require (
 	modernc.org/sqlite v1.54.0
 	webtyp.com/ddl v0.0.15
 	webtyp.com/fmt v1.0.0
-	webtyp.com/model v0.2.0
+	webtyp.com/model v0.2.2
 	webtyp.com/sqlt v0.0.10
 	webtyp.com/storage v0.1.0
 )
