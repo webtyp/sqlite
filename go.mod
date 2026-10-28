@@ -4,7 +4,7 @@ go 1.25.2
 
 require (
 	modernc.org/sqlite v1.54.0
-	webtyp.com/ddl v0.0.15
+	webtyp.com/ddl v0.0.32
 	webtyp.com/fmt v1.0.0
 	webtyp.com/model v0.2.8
 	webtyp.com/sqlt v0.0.11
