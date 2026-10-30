@@ -68,15 +68,15 @@ func TestJulesScenario(t *testing.T) {
 	ddldb := ddl.New(conn, dc)
 
 	// Create SimpleUser table
-	err = ddldb.CreateTable(&SimpleUser{})
+	err = ddldb.Sync(&SimpleUser{})
 	if err != nil {
-		t.Fatalf("failed to create SimpleUser table: %v", err)
+		t.Fatalf("failed to Sync SimpleUser table: %v", err)
 	}
 
-	// Calling CreateTable twice should return success (IF NOT EXISTS)
-	err = ddldb.CreateTable(&SimpleUser{})
+	// Calling Sync twice should return success
+	err = ddldb.Sync(&SimpleUser{})
 	if err != nil {
-		t.Fatalf("failed to create SimpleUser table (second time): %v", err)
+		t.Fatalf("failed to Sync SimpleUser table (second time): %v", err)
 	}
 
 	// Insert into SimpleUser
@@ -97,9 +97,9 @@ func TestJulesScenario(t *testing.T) {
 	}
 
 	// Create SimpleSession table
-	err = ddldb.CreateTable(&SimpleSession{})
+	err = ddldb.Sync(&SimpleSession{})
 	if err != nil {
-		t.Fatalf("failed to create SimpleSession table: %v", err)
+		t.Fatalf("failed to Sync SimpleSession table: %v", err)
 	}
 
 	// Insert into SimpleSession
