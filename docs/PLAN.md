@@ -2,8 +2,10 @@
 PLAN: "test: create test tables with ddl.Sync — CreateTable is leaving ddl's public API"
 EXECUTOR: jules
 REVIEWER: none
-STATUS: running
+STATUS: review
 SESSION: 7983091552864782048
+PR: https://github.com/webtyp/sqlite/pull/17
+REVIEWED_COMMIT: 8169965587aabbd5dae52c37c6ac179827888e63
 ---
 
 > Read AGENTS.md at the repo root before any change.
