@@ -319,7 +319,7 @@ func (n *NoColsModel) ModelName() string     { return "no_cols" }
 func (n *NoColsModel) Schema() []model.Field { return nil }
 func (n *NoColsModel) Pointers() []any       { return nil }
 
-func TestCreateTable(t *testing.T) {
+func TestSyncCreation(t *testing.T) {
 	conn, err := sqlite.Open(":memory:")
 	if err != nil {
 		t.Fatalf("failed to create db: %v", err)
@@ -332,15 +332,15 @@ func TestCreateTable(t *testing.T) {
 	}
 	ddldb := ddl.New(conn, dc)
 
-	err = ddldb.CreateTable(&User{})
+	err = ddldb.Sync(&User{})
 	if err != nil {
-		t.Fatalf("CreateTable User failed: %v", err)
+		t.Fatalf("Sync User failed: %v", err)
 	}
 
 	// Verify table exists by inserting into it
 	user := &User{Name: "Alice", Age: 30}
 	if err := dbCreate(conn, conn, user); err != nil {
-		t.Fatalf("Create User record failed after CreateTable: %v", err)
+		t.Fatalf("Create User record failed after Sync: %v", err)
 	}
 }
 
@@ -357,9 +357,9 @@ func TestDropTable(t *testing.T) {
 	}
 	ddldb := ddl.New(conn, dc)
 
-	err = ddldb.CreateTable(&User{})
+	err = ddldb.Sync(&User{})
 	if err != nil {
-		t.Fatalf("CreateTable User failed: %v", err)
+		t.Fatalf("Sync User failed: %v", err)
 	}
 
 	err = ddldb.DropTable(&User{})
@@ -375,7 +375,7 @@ func TestDropTable(t *testing.T) {
 	}
 }
 
-func TestCreateTableWithFK(t *testing.T) {
+func TestSyncWithFK(t *testing.T) {
 	conn, err := sqlite.Open(":memory:")
 	if err != nil {
 		t.Fatalf("failed to create db: %v", err)
@@ -389,15 +389,15 @@ func TestCreateTableWithFK(t *testing.T) {
 	ddldb := ddl.New(conn, dc)
 
 	// First create referenced table
-	err = ddldb.CreateTable(&User{})
+	err = ddldb.Sync(&User{})
 	if err != nil {
-		t.Fatalf("CreateTable User failed: %v", err)
+		t.Fatalf("Sync User failed: %v", err)
 	}
 
 	// Then create table with FK
-	err = ddldb.CreateTable(&Order{})
+	err = ddldb.Sync(&Order{})
 	if err != nil {
-		t.Fatalf("CreateTable Order (with FK) failed: %v", err)
+		t.Fatalf("Sync Order (with FK) failed: %v", err)
 	}
 }
 
@@ -568,8 +568,8 @@ func TestUpdate_ExplicitPK_MultiRow(t *testing.T) {
 	}
 	ddldb := ddl.New(conn, dc)
 
-	if err := ddldb.CreateTable(&User{}); err != nil {
-		t.Fatalf("CreateTable: %v", err)
+	if err := ddldb.Sync(&User{}); err != nil {
+		t.Fatalf("Sync: %v", err)
 	}
 
 	// Insert three users.
@@ -761,8 +761,8 @@ func TestSqliteAdapter_DBConformance(t *testing.T) {
 			}
 			db := ddl.New(conn, dc)
 			for _, m := range models {
-				if err := db.CreateTable(m); err != nil {
-					t.Fatalf("CreateTable: %v", err)
+				if err := db.Sync(m); err != nil {
+					t.Fatalf("Sync: %v", err)
 				}
 			}
 			return conn

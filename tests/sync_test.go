@@ -51,7 +51,7 @@ func TestErrNoRowsMapping(t *testing.T) {
 		t.Fatalf("no ddl compiler")
 	}
 	ddldb := ddl.New(conn, dc)
-	ddldb.CreateTable(&SyncUser{})
+	ddldb.Sync(&SyncUser{})
 
 	u := &SyncUser{}
 	err = dbReadOne(conn, conn, u, storage.Eq("id", 999))
@@ -72,7 +72,7 @@ func TestTableColumnsIntrospection(t *testing.T) {
 		t.Fatalf("no ddl compiler")
 	}
 	ddldb := ddl.New(conn, dc)
-	ddldb.CreateTable(&SyncUser{})
+	ddldb.Sync(&SyncUser{})
 
 	exec, ok := conn.(ddl.TableIntrospector)
 	if !ok {
@@ -130,7 +130,7 @@ func TestSync(t *testing.T) {
 		t.Fatalf("no ddl compiler")
 	}
 	ddldb := ddl.New(conn, dc)
-	ddldb.CreateTable(&SyncUser{})
+	ddldb.Sync(&SyncUser{})
 
 	// Sync to SyncNewUser (adds 'bio')
 	err = ddldb.Sync(&SyncNewUser{})

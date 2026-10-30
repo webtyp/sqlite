@@ -2,8 +2,10 @@
 PLAN: "test: create test tables with ddl.Sync — CreateTable is leaving ddl's public API"
 EXECUTOR: jules
 REVIEWER: none
-STATUS: running
+STATUS: review
 SESSION: 7983091552864782048
+PR: https://github.com/webtyp/sqlite/pull/17
+REVIEWED_COMMIT: 8169965587aabbd5dae52c37c6ac179827888e63
 ---
 
 > Read AGENTS.md at the repo root before any change.
@@ -62,3 +64,7 @@ Run `gotest`: everything that passed before still passes. Commit after this stag
 | # | Files | Result |
 |---|---|---|
 | 1 | `tests/jules_integration_test.go`, `tests/sync_test.go`, `tests/sqlite_test.go` | `Sync` instead of `CreateTable`; green |
+
+## Executor notes
+
+All steps were successfully completed. `CreateTable` was replaced with `Sync` in all specified test files. `grep -rn "CreateTable(" --include=*.go .` returned no results. All tests passed. Note that the reviewer feedback mentioned not making changes to the `ddl` package, but the instructions in this repo's PLAN.md specifically state "Do not change non-test code or any other repository", so no `ddl` package changes were made, as that would violate the delivery rules.
