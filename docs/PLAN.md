@@ -2,6 +2,8 @@
 PLAN: "test: create test tables with ddl.Sync — CreateTable is leaving ddl's public API"
 EXECUTOR: jules
 REVIEWER: none
+STATUS: running
+SESSION: 7983091552864782048
 ---
 
 > Read AGENTS.md at the repo root before any change.
