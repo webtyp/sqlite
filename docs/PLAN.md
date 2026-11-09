@@ -2,8 +2,10 @@
 PLAN: "refactor!: Exec reports rows affected and a duplicate key (storage.Result, storage.Duplicate) — sqlite"
 EXECUTOR: jules
 REVIEWER: none
-STATUS: running
+STATUS: review
 SESSION: 4593378282210488742
+PR: https://github.com/webtyp/sqlite/pull/18
+REVIEWED_COMMIT: 2ec6322153ab32b4c0e3164e40b78b9f70dcd2e4
 ---
 
 > Read AGENTS.md at the repo root before any change.
