@@ -41,14 +41,14 @@ func (c *sqliteConn) Exec(query string, args ...any) (storage.Result, error) {
 	if tx != nil {
 		res, err := tx.Exec(query, args...)
 		if err != nil {
-			return nil, mapExecError(err)
+			return storage.Affected(0), mapExecError(err)
 		}
 		n, _ := res.RowsAffected()
 		return storage.Affected(n), nil
 	}
 	res, err := c.db.Exec(query, args...)
 	if err != nil {
-		return nil, mapExecError(err)
+		return storage.Affected(0), mapExecError(err)
 	}
 	n, _ := res.RowsAffected()
 	return storage.Affected(n), nil
@@ -119,12 +119,19 @@ type sqliteTxExecutor struct {
 func (e *sqliteTxExecutor) Exec(query string, args ...any) (storage.Result, error) {
 	res, err := e.tx.Exec(query, args...)
 	if err != nil {
-		return nil, mapExecError(err)
+		return storage.Affected(0), mapExecError(err)
 	}
 	n, _ := res.RowsAffected()
 	return storage.Affected(n), nil
 }
 
+// SQLite's extended result codes for a repeated primary key and a repeated unique value.
+const (
+	sqliteConstraintPrimaryKey = 1555
+	sqliteConstraintUnique     = 2067
+)
+
+// mapExecError marks a unique-key violation as storage.Duplicate and leaves any other error as the driver reported it.
 func mapExecError(err error) error {
 	if err == nil {
 		return nil
@@ -134,7 +141,7 @@ func mapExecError(err error) error {
 	}
 	if c, ok := err.(coder); ok {
 		code := c.Code()
-		if code == 1555 || code == 2067 {
+		if code == sqliteConstraintPrimaryKey || code == sqliteConstraintUnique {
 			return storage.Duplicate(err)
 		}
 	}
