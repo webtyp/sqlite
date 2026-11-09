@@ -33,17 +33,25 @@ func (c *sqliteConn) CompileDDL(s ddl.Stmt, m model.Model) (string, []any, error
 	return dc.CompileDDL(s, m)
 }
 
-func (c *sqliteConn) Exec(query string, args ...any) error {
+func (c *sqliteConn) Exec(query string, args ...any) (storage.Result, error) {
 	c.mu.Lock()
 	tx := c.activeTx
 	c.mu.Unlock()
 
 	if tx != nil {
-		_, err := tx.Exec(query, args...)
-		return err
+		res, err := tx.Exec(query, args...)
+		if err != nil {
+			return nil, mapExecError(err)
+		}
+		n, _ := res.RowsAffected()
+		return storage.Affected(n), nil
 	}
-	_, err := c.db.Exec(query, args...)
-	return err
+	res, err := c.db.Exec(query, args...)
+	if err != nil {
+		return nil, mapExecError(err)
+	}
+	n, _ := res.RowsAffected()
+	return storage.Affected(n), nil
 }
 
 func (c *sqliteConn) QueryRow(query string, args ...any) storage.Scanner {
@@ -108,8 +116,28 @@ type sqliteTxExecutor struct {
 	conn *sqliteConn
 }
 
-func (e *sqliteTxExecutor) Exec(query string, args ...any) error {
-	_, err := e.tx.Exec(query, args...)
+func (e *sqliteTxExecutor) Exec(query string, args ...any) (storage.Result, error) {
+	res, err := e.tx.Exec(query, args...)
+	if err != nil {
+		return nil, mapExecError(err)
+	}
+	n, _ := res.RowsAffected()
+	return storage.Affected(n), nil
+}
+
+func mapExecError(err error) error {
+	if err == nil {
+		return nil
+	}
+	type coder interface {
+		Code() int
+	}
+	if c, ok := err.(coder); ok {
+		code := c.Code()
+		if code == 1555 || code == 2067 {
+			return storage.Duplicate(err)
+		}
+	}
 	return err
 }
 

@@ -10,7 +10,7 @@ import (
 // storage.Conn (only it holds the compiler); exec is whichever executor the operation should
 // run through (the conn itself, or an active Tx).
 type execer interface {
-	Exec(query string, args ...any) error
+	Exec(query string, args ...any) (storage.Result, error)
 	QueryRow(query string, args ...any) storage.Scanner
 	Query(query string, args ...any) (storage.Rows, error)
 }
@@ -45,7 +45,8 @@ func dbCreate(conn storage.Conn, exec execer, m model.Model) error {
 	if err != nil {
 		return err
 	}
-	return exec.Exec(plan.Query, plan.Args...)
+	_, err = exec.Exec(plan.Query, plan.Args...)
+	return err
 }
 
 func dbReadOne(conn storage.Conn, exec execer, m model.Model, conds ...storage.Condition) error {
@@ -104,7 +105,8 @@ func dbUpdate(conn storage.Conn, exec execer, m model.Model, conds ...storage.Co
 	if err != nil {
 		return err
 	}
-	return exec.Exec(plan.Query, plan.Args...)
+	_, err = exec.Exec(plan.Query, plan.Args...)
+	return err
 }
 
 func dbDelete(conn storage.Conn, exec execer, m model.Model, conds ...storage.Condition) error {
@@ -113,5 +115,6 @@ func dbDelete(conn storage.Conn, exec execer, m model.Model, conds ...storage.Co
 	if err != nil {
 		return err
 	}
-	return exec.Exec(plan.Query, plan.Args...)
+	_, err = exec.Exec(plan.Query, plan.Args...)
+	return err
 }

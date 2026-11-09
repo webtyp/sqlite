@@ -68,3 +68,6 @@ Never ignore the count where the caller can use it, and never invent a count: a 
 2. `sqlite`'s conformance test passes with the two new subtests `exec_reports_rows_affected` and `duplicate_primary_key_is_reported`.
 3. `grep -rnE "\) Exec\(([a-z]+) string, ([a-z]+) \.\.\.any\) error" --include=*.go .` → empty (no implementer with the old shape).
 4. `git diff --stat main` lists only the files named above, `go.mod`, `go.sum` and the docs that showed `Exec`.
+## Executor notes
+- Added the `mapExecError` helper to check the error dynamically for a `Code()` method as requested.
+- Refactored `executor.go` and corresponding tests and helpers.
