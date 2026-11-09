@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"webtyp.com/ddl"
+	ddlconf "webtyp.com/ddl/conformance"
 	"webtyp.com/fmt"
 	"webtyp.com/model"
 	"webtyp.com/sqlite"
@@ -766,6 +767,45 @@ func TestSqliteAdapter_DBConformance(t *testing.T) {
 				}
 			}
 			return conn
+		},
+	})
+}
+
+func TestSqliteAdapter_DDLConformance(t *testing.T) {
+	ddlconf.Run(t, ddlconf.Factory{
+		Name: "sqlite-adapter",
+		New: func(t *testing.T) (schema *ddl.DB, conn storage.Conn, cols func(string) []string) {
+			conn, err := sqlite.Open(":memory:")
+			if err != nil {
+				t.Fatalf("Open: %v", err)
+			}
+			dc, ok := sqlite.DDLCompiler(conn)
+			if !ok {
+				t.Fatalf("compiler does not support DDL")
+			}
+			raw, ok := sqlite.GetSqlDB(conn)
+			if !ok {
+				t.Fatalf("connection has no *sql.DB")
+			}
+			cols = func(table string) []string {
+				rows, err := raw.Query("PRAGMA table_info(" + table + ")")
+				if err != nil {
+					t.Fatalf("PRAGMA table_info error: %v", err)
+				}
+				defer rows.Close()
+				var names []string
+				for rows.Next() {
+					var cid, notnull, pk int
+					var name, typeStr string
+					var dflt any
+					if err := rows.Scan(&cid, &name, &typeStr, &notnull, &dflt, &pk); err != nil {
+						t.Fatalf("scan PRAGMA table_info error: %v", err)
+					}
+					names = append(names, name)
+				}
+				return names
+			}
+			return ddl.New(conn, dc), conn, cols
 		},
 	})
 }
