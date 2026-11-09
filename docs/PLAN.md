@@ -2,6 +2,8 @@
 PLAN: "refactor!: Exec reports rows affected and a duplicate key (storage.Result, storage.Duplicate) — sqlite"
 EXECUTOR: jules
 REVIEWER: none
+STATUS: running
+SESSION: 4593378282210488742
 ---
 
 > Read AGENTS.md at the repo root before any change.
