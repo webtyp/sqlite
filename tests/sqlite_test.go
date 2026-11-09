@@ -57,7 +57,7 @@ func TestComplexQueriesAndJoins(t *testing.T) {
 	}
 	defer conn.Close()
 
-	err = conn.Exec(`
+	_, err = conn.Exec(`
 		CREATE TABLE users (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			name TEXT,
@@ -113,7 +113,7 @@ func TestComplexQueriesAndJoins(t *testing.T) {
 	}
 
 	// Test JOIN query via raw SQL
-	err = conn.Exec(`
+	_, err = conn.Exec(`
 		CREATE TABLE user_totals AS
 		SELECT u.name, SUM(o.amount) as total
 		FROM users u
@@ -194,7 +194,7 @@ func TestSqliteAdapter(t *testing.T) {
 	defer conn.Close()
 
 	// Create table
-	err = conn.Exec(`
+	_, err = conn.Exec(`
 		CREATE TABLE users (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			name TEXT,
@@ -283,8 +283,8 @@ func (e *errorExecutor) Close() error {
 	return fmt.Err("close error")
 }
 
-func (e *errorExecutor) Exec(query string, args ...any) error {
-	return fmt.Err("exec error")
+func (e *errorExecutor) Exec(query string, args ...any) (storage.Result, error) {
+	return storage.Affected(0), fmt.Err("exec error")
 }
 
 func TestCloseError(t *testing.T) {
@@ -297,7 +297,7 @@ func TestCloseError(t *testing.T) {
 
 func TestExecSQLError(t *testing.T) {
 	fakeConn := &errorExecutor{}
-	err := fakeConn.Exec("SELECT 1")
+	_, err := fakeConn.Exec("SELECT 1")
 	if err == nil {
 		t.Fatalf("expected error when execSQL fails, got nil")
 	}
@@ -409,7 +409,7 @@ func TestExecutorErrors(t *testing.T) {
 	defer conn.Close()
 
 	// Test Exec error
-	err = conn.Exec("INVALID SQL")
+	_, err = conn.Exec("INVALID SQL")
 	if err == nil {
 		t.Fatalf("expected error on invalid sql format")
 	}
@@ -461,7 +461,7 @@ func TestTxExecutorErrors(t *testing.T) {
 	}
 
 	// Test Exec
-	err = tx.Exec("INVALID SQL")
+	_, err = tx.Exec("INVALID SQL")
 	if err == nil {
 		t.Fatalf("expected error on invalid tx sql")
 	}
@@ -500,7 +500,7 @@ func TestTransaction(t *testing.T) {
 	}
 	defer conn.Close()
 
-	err = conn.Exec(`
+	_, err = conn.Exec(`
 		CREATE TABLE users (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			name TEXT,
@@ -704,7 +704,7 @@ func TestSchemaInspector(t *testing.T) {
 	}
 	defer conn.Close()
 
-	err = conn.Exec(`
+	_, err = conn.Exec(`
 		CREATE TABLE users (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			name TEXT NOT NULL,

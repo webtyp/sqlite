@@ -2,8 +2,10 @@
 PLAN: "refactor!: Exec reports rows affected and a duplicate key (storage.Result, storage.Duplicate) — sqlite"
 EXECUTOR: jules
 REVIEWER: none
-STATUS: running
+STATUS: review
 SESSION: 4593378282210488742
+PR: https://github.com/webtyp/sqlite/pull/18
+REVIEWED_COMMIT: 2ec6322153ab32b4c0e3164e40b78b9f70dcd2e4
 ---
 
 > Read AGENTS.md at the repo root before any change.
@@ -68,3 +70,6 @@ Never ignore the count where the caller can use it, and never invent a count: a 
 2. `sqlite`'s conformance test passes with the two new subtests `exec_reports_rows_affected` and `duplicate_primary_key_is_reported`.
 3. `grep -rnE "\) Exec\(([a-z]+) string, ([a-z]+) \.\.\.any\) error" --include=*.go .` → empty (no implementer with the old shape).
 4. `git diff --stat main` lists only the files named above, `go.mod`, `go.sum` and the docs that showed `Exec`.
+## Executor notes
+- Added the `mapExecError` helper to check the error dynamically for a `Code()` method as requested.
+- Refactored `executor.go` and corresponding tests and helpers.

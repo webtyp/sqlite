@@ -1,14 +1,14 @@
 module webtyp.com/sqlite
 
-go 1.25.2
+go 1.26.8
 
 require (
 	modernc.org/sqlite v1.54.0
-	webtyp.com/ddl v0.0.46
+	webtyp.com/ddl v0.0.49
 	webtyp.com/fmt v1.0.0
 	webtyp.com/model v0.2.15
-	webtyp.com/sqlt v0.0.14
-	webtyp.com/storage v0.1.19
+	webtyp.com/sqlt v0.0.16
+	webtyp.com/storage v0.2.1
 )
 
 require (

@@ -33,17 +33,25 @@ func (c *sqliteConn) CompileDDL(s ddl.Stmt, m model.Model) (string, []any, error
 	return dc.CompileDDL(s, m)
 }
 
-func (c *sqliteConn) Exec(query string, args ...any) error {
+func (c *sqliteConn) Exec(query string, args ...any) (storage.Result, error) {
 	c.mu.Lock()
 	tx := c.activeTx
 	c.mu.Unlock()
 
 	if tx != nil {
-		_, err := tx.Exec(query, args...)
-		return err
+		res, err := tx.Exec(query, args...)
+		if err != nil {
+			return storage.Affected(0), mapExecError(err)
+		}
+		n, _ := res.RowsAffected()
+		return storage.Affected(n), nil
 	}
-	_, err := c.db.Exec(query, args...)
-	return err
+	res, err := c.db.Exec(query, args...)
+	if err != nil {
+		return storage.Affected(0), mapExecError(err)
+	}
+	n, _ := res.RowsAffected()
+	return storage.Affected(n), nil
 }
 
 func (c *sqliteConn) QueryRow(query string, args ...any) storage.Scanner {
@@ -108,8 +116,35 @@ type sqliteTxExecutor struct {
 	conn *sqliteConn
 }
 
-func (e *sqliteTxExecutor) Exec(query string, args ...any) error {
-	_, err := e.tx.Exec(query, args...)
+func (e *sqliteTxExecutor) Exec(query string, args ...any) (storage.Result, error) {
+	res, err := e.tx.Exec(query, args...)
+	if err != nil {
+		return storage.Affected(0), mapExecError(err)
+	}
+	n, _ := res.RowsAffected()
+	return storage.Affected(n), nil
+}
+
+// SQLite's extended result codes for a repeated primary key and a repeated unique value.
+const (
+	sqliteConstraintPrimaryKey = 1555
+	sqliteConstraintUnique     = 2067
+)
+
+// mapExecError marks a unique-key violation as storage.Duplicate and leaves any other error as the driver reported it.
+func mapExecError(err error) error {
+	if err == nil {
+		return nil
+	}
+	type coder interface {
+		Code() int
+	}
+	if c, ok := err.(coder); ok {
+		code := c.Code()
+		if code == sqliteConstraintPrimaryKey || code == sqliteConstraintUnique {
+			return storage.Duplicate(err)
+		}
+	}
 	return err
 }
 
